@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/23499804/README.md)
 # Практическая работа №18 - Анализ доступности
 
 ## Выполнил: Магомерзаев Амир Русланович
