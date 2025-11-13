@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Портфолио студента - Главная</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-2xl: 3rem;
+            --primary-color: #2563eb;
+            --text-color: #0b1020;
+            --bg-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --radius: 8px;
+            --error-color: #dc2626;
+            --success-color: #16a34a;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .page {
+            min-height: 100vh;
+            min-height: 100svh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            inset-inline-start: 1rem;
+            inset-block-start: -100%;
+            z-index: 10000;
+            padding: .5rem .75rem;
+            background: #111;
+            color: #fff;
+            border-radius: .5rem;
+            text-decoration: none;
+        }
+
+        .skip-link:focus,
+        .skip-link:focus-visible {
+            inset-block-start: 1rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        a, button, input, textarea, select {
+            outline-offset: 2px;
+        }
+
+        /* Sticky header */
+        .nav {
+            position: sticky;
+            top: 0;
+            padding-block-start: calc(.75rem + env(safe-area-inset-top));
+            padding-block-end: .75rem;
+            padding-inline-start: calc(var(--space-md) + env(safe-area-inset-left));
+            padding-inline-end: calc(var(--space-md) + env(safe-area-inset-right));
+            background: var(--primary-color);
+            color: #fff;
+            z-index: 100;
+            isolation: isolate;
+            box-shadow: 0 1px 3px rgba(0,0,0,.1);
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: var(--space-lg);
+        }
+
+        .nav-link {
+            color: inherit;
+            text-decoration: none;
+            padding: .5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero section */
+        .hero {
+            padding: var(--space-2xl) var(--space-md);
+            text-align: center;
+        }
+
+        .photo-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .hero_photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem);
+            margin-bottom: var(--space-lg);
+        }
+
+        .hero_greeting {
+            font-size: clamp(1.25rem, 1rem + 1.2vw, 1.8rem);
+        }
+
+        /* Projects grid */
+        .projects-preview {
+            margin-block: var(--space-2xl);
+            padding-inline: clamp(.75rem, .5rem + 1vw, 2rem);
+        }
+
+        .projects-preview_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .project-card {
+            background: #fff;
+            border-radius: .75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform .2s ease, box-shadow .2s ease;
+            min-width: 0;
+            padding: var(--space-lg);
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .project-card_title,
+        .project-card_description {
+            overflow-wrap: anywhere;
+        }
+
+        /* Container queries */
+        @supports (container-type: inline-size) {
+            .projects-area {
+                container-type: inline-size;
+                container-name: projects;
+            }
+
+            @container projects (min-width: 640px) {
+                .projects-list {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @container projects (min-width: 960px) {
+                .projects-list {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        }
+
+        /* Footer */
+        .footer {
+            padding: var(--space-lg);
+            background: #1e293b;
+            color: #fff;
+            text-align: center;
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+        }
+
+        /* Accessibility helpers */
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (prefers-contrast: more) {
+            .button, .filter, .nav-link {
+                box-shadow: inset 0 0 0 2px #fff;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Large touch targets */
+        @media (pointer: coarse) {
+            a, button, .nav-link {
+                min-height: 44px;
+                padding: .75rem 1rem;
+            }
+        }
+
+        /* Full-bleed section */
+        .hero--bleed {
+            margin-inline: calc(50% - 50vw);
+            padding-inline: calc(50vw - 50%);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+        }
+
+        /* Responsive navigation */
+        @media (max-width: 768px) {
+            .nav-list {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Стили для практической 16 - адаптивные изображения */
+        
+        /* Адаптивная галерея */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .gallery_item {
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+
+        .gallery_image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform .3s ease;
+            border-radius: .5rem;
+        }
+
+        .gallery_image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Демонстрация object-fit */
+        .object-fit-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .object-fit-item {
+            text-align: center;
+            background: #fff;
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .object-fit-item img {
+            width: 100%;
+            height: 150px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+        }
+
+        .object-fit-cover { object-fit: cover; }
+        .object-fit-contain { object-fit: contain; background: #f8fafc; }
+        .object-fit-fill { object-fit: fill; }
+
+        /* Retina изображение */
+        .retina-image {
+            width: 100px;
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+            border-radius: var(--radius);
+        }
+
+        /* Стили для форм */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: var(--error-color);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-input.error,
+        .form-textarea.error,
+        .form-select.error {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--error-color);
+            font-size: 0.875rem;
+        }
+
+        .success-message {
+            display: block;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: rgba(22, 163, 74, 0.1);
+            color: var(--success-color);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .form-fieldset {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        .form-legend {
+            padding: 0 0.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .form-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .form-button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .form-button:active {
+            transform: translateY(1px);
+        }
+
+        .form-button:focus {
+            outline: 3px solid rgba(37, 99, 235, 0.3);
+            outline-offset: 2px;
+        }
+
+        .form-button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Контейнер формы для выравнивания */
+        .form-container {
+            max-width: 65ch;
+            margin: 0 auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gallery_image {
+                height: 150px;
+            }
+            .object-fit-demo {
+                grid-template-columns: 1fr;
+            }
+            .form-fieldset {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            .form-fieldset {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Темная тема */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-color: #e2e8f0;
+                --bg-color: #0f172a;
+                --border-color: #334155;
+            }
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+            }
+            .project-card, .object-fit-item {
+                background: #1e293b;
+            }
+            .object-fit-contain {
+                background: #334155;
+            }
+            .form-input,
+            .form-textarea,
+            .form-select {
+                background-color: #1e293b;
+                color: var(--text-color);
+                border-color: #475569;
+            }
+            .form-fieldset {
+                border-color: #475569;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <a class="skip-link" href="#main">Перейти к основному содержимому</a>
+        
+        <header>
+            <nav class="nav" aria-label="Основная навигация">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link" aria-current="page">Главная</a></li>
+                    <li><a href="#projects" class="nav-link">Проекты</a></li>
+                    <li><a href="#gallery" class="nav-link">Галерея</a></li>
+                    <li><a href="#about" class="nav-link">Обо мне</a></li>
+                    <li><a href="#contact" class="nav-link">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main id="main" class="main">
+            <!-- Герой с улучшенными изображениями -->
+            <section class="hero hero--bleed">
+                <h1 class="section-title">Добро пожаловать в моё портфолио</h1>
+                <p class="hero_greeting">Я студент, изучающий фронтенд и бэкенд разработку</p>
+                
+                <figure class="hero_image">
+                    <!-- Контейнер для круглой фотографии -->
+                    <div class="photo-container">
+                        <picture>
+                            <!-- WebP для современных браузеров -->
+                            <source srcset="profile.webp" type="image/webp">
+                            <!-- JPEG для старых браузеров -->
+                            <source srcset="profile.jpg" type="image/jpeg">
+                            <!-- Фолбэк + Техника 4: Retina display -->
+                            <img class="hero_photo"
+                                 src="profile.jpg"
+                                 srcset="profile.jpg 1x, profile@2x.jpg 2x"
+                                 width="200" height="200"
+                                 alt="Портрет студента"
+                                 loading="eager">
+                        </picture>
+                    </div>
+                    <figcaption class="visually-hidden">Фотография студента</figcaption>
+                </figure>
+            </section>
+
+            <section id="projects" class="projects-preview">
+                <h2 class="section-title">Мои проекты</h2>
+                
+                <div class="projects-area">
+                    <div class="projects-preview_grid projects-list">
+                        <article class="project-card">
+                            <h3 class="project-card_title">Веб-приложение для заметок</h3>
+                            <p class="project-card_description">React-приложение с локальным хранилищем и адаптивным дизайном.</p>
+                        </article>
+                        
+                        <article class="project-card">
+                            <h3 class="project-card_title">Интернет-магазин</h3>
+                            <p class="project-card_description">Полнофункциональный магазин на Node.js с системой оплаты.</p>
+                        </article>
+                        
+                        <article class="project-card">
+                            <h3 class="project-card_title">Погодное приложение</h3>
+                            <p class="project-card_description">Приложение с прогнозом погоды использующее внешние API.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Новая секция: Демонстрация object-fit -->
+            <section class="projects-preview">
+                <h2 class="section-title">Демонстрация Object-Fit</h2>
+                
+                <div class="object-fit-demo">
+                    <div class="object-fit-item">
+                        <img src="profile.jpg" alt="Пример изображения с object-fit: cover - изображение заполняет контейнер, сохраняя пропорции" class="object-fit-cover">
+                        <span>object-fit: cover</span>
+                    </div>
+                    <div class="object-fit-item">
+                        <img src="profile.jpg" alt="Пример изображения с object-fit: contain - изображение вписывается в контейнер, сохраняя пропорции" class="object-fit-contain">
+                        <span>object-fit: contain</span>
+                    </div>
+                    <div class="object-fit-item">
+                        <img src="profile.jpg" alt="Пример изображения с object-fit: fill - изображение растягивается для заполнения контейнера" class="object-fit-fill">
+                        <span>object-fit: fill</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Новая секция: Адаптивная галерея -->
+            <section id="gallery" class="projects-preview">
+                <h2 class="section-title">Галерея проектов</h2>
+                
+                <div class="gallery">
+                    <div class="gallery_item">
+                        <div class="gallery_image-container">
+                            <img src="profile.jpg" 
+                                 alt="Проект 1 - Веб-приложение для заметок с React и локальным хранилищем"
+                                 class="gallery_image"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                    <div class="gallery_item">
+                        <div class="gallery_image-container">
+                            <img src="profile.jpg" 
+                                 alt="Проект 2 - Интерфейс интернет-магазина с системой оплаты"
+                                 class="gallery_image"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                    <div class="gallery_item">
+                        <div class="gallery_image-container">
+                            <img src="profile.jpg" 
+                                 alt="Проект 3 - Мобильное приложение с прогнозом погоды"
+                                 class="gallery_image"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                    <div class="gallery_item">
+                        <div class="gallery_image-container">
+                            <img src="profile.jpg" 
+                                 alt="Проект 4 - Дизайн пользовательского интерфейса для веб-приложения"
+                                 class="gallery_image"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="projects-preview">
+                <h2 class="section-title">Обо мне</h2>
+                <div class="form-container">
+                    <p>Я учусь на втором курсе и активно изучаю современные технологии веб-разработки.</p>
+                </div>
+            </section>
+
+            <section id="contact" class="projects-preview">
+                <h2 class="section-title" id="contact-form-title">Контакты</h2>
+                <div class="form-container">
+                    <div id="form-instructions" class="visually-hidden">
+                        Форма содержит обязательные поля: Email и Текст сообщения. После заполнения нажмите кнопку "Отправить сообщение".
+                    </div>
+                    
+                    <form id="contact-form" aria-labelledby="contact-form-title" aria-describedby="form-instructions" novalidate role="form">
+                        
+                        <fieldset class="form-fieldset">
+                            <legend class="form-legend">Контактная информация</legend>
+                            
+                            <div class="form-group">
+                                <label for="name" class="form-label">Имя</label>
+                                <input type="text" id="name" name="name" class="form-input" 
+                                       aria-required="true" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="form-label required">Email</label>
+                                <input type="email" id="email" name="email" class="form-input" 
+                                       aria-required="true" required
+                                       aria-describedby="email-hint">
+                                <span id="email-hint" class="visually-hidden">Введите действующий адрес электронной почты</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject" class="form-label">Тема сообщения</label>
+                                <select id="subject" name="subject" class="form-select">
+                                    <option value="">Выберите тему</option>
+                                    <option value="collaboration">Сотрудничество</option>
+                                    <option value="project">Обсуждение проекта</option>
+                                    <option value="question">Вопрос</option>
+                                    <option value="other">Другое</option>
+                                </select>
+                            </div>
+                        </fieldset>
+                        
+                        <fieldset class="form-fieldset">
+                            <legend class="form-legend">Сообщение</legend>
+                            
+                            <div class="form-group">
+                                <label for="message" class="form-label required">Текст сообщения</label>
+                                <textarea id="message" name="message" rows="6" class="form-textarea" 
+                                          aria-required="true" required
+                                          aria-describedby="message-hint"></textarea>
+                                <span id="message-hint" class="visually-hidden">Опишите детали вашего запроса</span>
+                            </div>
+                        </fieldset>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="form-button" id="submit-btn"
+                                    aria-describedby="submit-instructions">
+                                Отправить сообщение
+                            </button>
+                            <div id="submit-instructions" class="visually-hidden">
+                                Нажмите Enter для отправки формы
+                            </div>
+                            <span id="submit-status" aria-live="polite"></span>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Студент ИПТИП. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <!-- Скрытый live region для динамических сообщений -->
+    <div id="live-region" aria-live="polite" aria-atomic="true" class="visually-hidden"></div>
+
+    <script>
+        // Полифил для контейнерных запросов
+        if (!CSS.supports('container-type', 'inline-size')) {
+            function handleResize() {
+                const projectsArea = document.querySelector('.projects-area');
+                const projectsList = document.querySelector('.projects-list');
+                
+                if (projectsArea && projectsList) {
+                    const width = projectsArea.offsetWidth;
+                    
+                    if (width >= 960) {
+                        projectsList.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                    } else if (width >= 640) {
+                        projectsList.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                    } else {
+                        projectsList.style.gridTemplateColumns = '1fr';
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+            handleResize();
+        }
+
+        // Функция для объявления сообщений скринридерам
+        function announceToScreenReader(message) {
+            const liveRegion = document.getElementById('live-region');
+            if (liveRegion) {
+                liveRegion.textContent = message;
+                // Очищаем сообщение через 3 секунды
+                setTimeout(() => {
+                    liveRegion.textContent = '';
+                }, 3000);
+            }
+        }
+
+        // Обработка формы с улучшенной доступностью
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const submitStatus = document.getElementById('submit-status');
+            
+            // Обработка клавиши Escape для улучшения доступности
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    const activeElement = document.activeElement;
+                    if (activeElement && (activeElement.tagName === 'INPUT' || 
+                        activeElement.tagName === 'TEXTAREA' || 
+                        activeElement.tagName === 'SELECT')) {
+                        activeElement.blur();
+                        announceToScreenReader('Фокус снят с поля ввода');
+                    }
+                }
+            });
+
+            if (contactForm) {
+                // Валидация формы в реальном времени
+                const inputs = contactForm.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', function() {
+                        validateField(this);
+                    });
+                    
+                    input.addEventListener('input', function() {
+                        if (this.classList.contains('error')) {
+                            validateField(this);
+                        }
+                    });
+
+                    // Добавляем описание для скринридеров при фокусе
+                    input.addEventListener('focus', function() {
+                        announceToScreenReader(`Вы в поле ${this.labels[0].textContent}`);
+                    });
+                });
+                
+                // Обработка отправки формы
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Валидация всех полей
+                    let isValid = true;
+                    inputs.forEach(input => {
+                        if (!validateField(input)) {
+                            isValid = false;
+                        }
+                    });
+                    
+                    if (isValid) {
+                        // Имитация отправки формы
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Отправка...';
+                        announceToScreenReader('Форма отправляется', 'assertive');
+                        
+                        setTimeout(() => {
+                            submitStatus.innerHTML = '<div class="success-message" role="alert" aria-live="polite" aria-atomic="true">Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.</div>';
+                            contactForm.reset();
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Отправить сообщение';
+                            announceToScreenReader('Сообщение успешно отправлено');
+                            
+                            // Фокусировка на сообщении об успехе для скринридеров
+                            const successMessage = submitStatus.querySelector('.success-message');
+                            if (successMessage) {
+                                successMessage.focus();
+                            }
+                        }, 1500);
+                    } else {
+                        announceToScreenReader('В форме есть ошибки. Пожалуйста, исправьте их', 'assertive');
+                        // Фокусировка на первом поле с ошибкой
+                        const firstError = contactForm.querySelector('.error');
+                        if (firstError) {
+                            firstError.focus();
+                        }
+                    }
+                });
+            }
+            
+            // Функция валидации поля
+            function validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let errorMessage = '';
+                
+                // Очистка предыдущих ошибок
+                field.classList.remove('error');
+                const existingError = field.parentNode.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Проверка обязательных полей
+                if (field.hasAttribute('required') && value === '') {
+                    isValid = false;
+                    errorMessage = 'Это поле обязательно для заполнения';
+                }
+                
+                // Проверка email
+                if (field.type === 'email' && value !== '') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Введите корректный адрес электронной почты';
+                    }
+                }
+                
+                // Отображение ошибки
+                if (!isValid) {
+                    field.classList.add('error');
+                    field.setAttribute('aria-invalid', 'true');
+                    
+                    const errorElement = document.createElement('span');
+                    errorElement.className = 'error-message';
+                    errorElement.textContent = errorMessage;
+                    errorElement.id = field.id + '-error';
+                    
+                    field.setAttribute('aria-describedby', field.getAttribute('aria-describedby') 
+                        ? field.getAttribute('aria-describedby') + ' ' + errorElement.id 
+                        : errorElement.id);
+                    
+                    field.parentNode.appendChild(errorElement);
+                    announceToScreenReader(`Ошибка в поле ${field.labels[0].textContent}: ${errorMessage}`);
+                } else {
+                    field.setAttribute('aria-invalid', 'false');
+                }
+                
+                return isValid;
+            }
+        });
+    </script>
+</body>
+</html>
